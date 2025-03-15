@@ -1,2 +1,2 @@
 # pandemonium
-a blog post made in php
+a todolist web app made in php
