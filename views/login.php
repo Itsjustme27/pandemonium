@@ -14,20 +14,20 @@
     $conn = $db->getConnection();
     
     if($_SERVER['REQUEST_METHOD'] === "POST") {
-        $username = htmlspecialchars($_POST['username']);
+        $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
 
-        $sql = "SELECT username, password FROM users WHERE username = ?";
+        $sql = "SELECT * FROM users WHERE email = ?";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if($result->num_rows > 0) {
             $user = $result->fetch_assoc();
             if(password_verify($password, $user['password'])) {
-                $_SESSION["username"] = $username;
+                $_SESSION["username"] = $user['username'];
                 header("Location: dashboard.php");
                 exit;
             } else {
@@ -40,8 +40,8 @@
     ?>
     <h1>Login</h1>
     <form action="login.php" method="post">
-        <label for="username">Enter username:</label><br>
-        <input type="text" name="username" id="username"><br>
+        <label for="email">Enter email:</label><br>
+        <input type="email" name="email" id="email"><br>
 
         <label for="password">Password</label><br>
         <input type="password" name="password" id="password"><br>
