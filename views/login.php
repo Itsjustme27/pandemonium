@@ -9,6 +9,7 @@
     <?php
     session_start();
     include_once '../models/Database.php';
+    include_once '../controllers/UsersController.php';
 
     $db = new Database();
     $conn = $db->getConnection();
@@ -17,24 +18,11 @@
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
 
-        $sql = "SELECT * FROM users WHERE email = ?";
+        $usersController = new UsersController();
+        $result = $usersController->handleLogin($email, $password);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            if(password_verify($password, $user['password'])) {
-                $_SESSION["username"] = $user['username'];
-                header("Location: dashboard.php");
-                exit;
-            } else {
-                echo "<script>alert('invalid password');</script>";
-            }
-        } else {
-            echo "<script>alert('email is not registered')</script>";
+        if($result) {
+            echo "<script>alert('{$result}');</script>";
         }
     }
     ?>

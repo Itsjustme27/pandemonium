@@ -10,12 +10,12 @@
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
     include_once '../models/Database.php';
-    include_once '../models/Users.php';
+    include_once '../controllers/UsersController.php';
 
     $db = new Database();
     $conn = $db->getConnection();
 
-    $users = new Users($conn);
+    $usersController = new UsersController();
 
 
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,7 +23,7 @@
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
 
-        $result = $users->register($username, $email, $password);
+        $result = $usersController->handleRegister($username, $email, $password);
 
         if($result){ 
             echo "<script>alert('Registered Successfully')</script>";
